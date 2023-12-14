@@ -78,7 +78,7 @@ def doctor_menu(doctor):
 #doctor will be able to view the list of patients with the help of tabulate
 def read_patients():
     patients = session.query(Patient).all()
-      if patients:
+    if patients:
         patient_data = []
         for patient in patients:
             patient_data.append([patient.id, patient.name, patient.age, patient.contact_info, patient.address])
