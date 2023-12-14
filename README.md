@@ -1,47 +1,50 @@
-# Commandline chat app in Python
+# Linda Mama Care
 
 ## Intro
 
-Hi Guys this repo consist of a source code for a simple CLI chatting app made using sockets in Python
+Linda Mama Care is a simple appointment management system for a medical clinic. The project provides a user-friendly interface for doctors and patients to manage appointments, view patient records, and perform other related tasks.
+
+The project is built using Python and utilizes the SQLAlchemy library for database management. It uses an SQLite database to store patient information, appointment details, and user credentials.
 
 
 To get started just clone the repository using  _git_  command or pressing download button option at the right side of the repository
 
-**Cloning**
+**FEATURES**
+# DOCTOR FUNCTIONALITY
 
-$ git clone 
-$ cd Commandline-chatting-system-python
-Commandline-chatting-system-python $ tree
-.
-├── client.py
-├── README.md
-└── server.py
+   1. Login as a doctor using username and password credentials.
+   2. View the list of patients with their details, including ID, name, age, contact information, and address.
+   3. View the list of appointments, including appointment ID, date, time, and status.
+   4.Add a new patient to the system.
+   5.Delete a patient record from the system.
+   6.Generate a report of appointments with a specific status.
+   7.Update the status of an appointment (scheduled or cancelled).
 
-0 directories, 3 files
 
-This repo consist of two  **Python scripts**  named  _client.py_  and  _server.py_as I have explained on the tutorial, whereby  **server.py**  will serve as our server node and  **client.py**  will serve as our client node.
+# PATIENT FUNCTIONALITY
 
-## Running our script
 
-**Note**
+    1.Login as a patient using username and password credentials.
+    2.View personal details, including patient ID, username, and role.
+    3.Book a new appointment by specifying the appointment type, date, time, and doctor ID.
+    4.View the list of appointments booked by the patient, including appointment ID, type, date, time, and status.
 
-You should start running the server script before running the client script because if you do otherwise, the client will exit immediately as result of not finding a server node to connect
 
-**running server.py**
+**Usage**
+To use the Linda Mama Care system, follow these steps:
 
-$ python server.py
+    - Start the program by running the login.py script.
+    - Choose to login as a doctor or patient.
+    - If logging in as a doctor, enter the username and password. Upon successful login, the doctor menu will be displayed with various options.
+    - If logging in as a patient, enter the username and password. Upon successful login, the patient menu will be displayed with available options.
+    - Depending on the selected role, interact with the system by choosing appropriate menu options.
+    - Follow the prompts to perform desired actions, such as viewing patient details, adding/deleting patients, booking/viewing appointments, and more.
+    - Please note that this project provides a basic framework for managing appointments in a medical clinic. You can customize and enhance the functionality according to your specific requirements by modifying the code accordingly.
 
-**running client.py**
 
-$ python client.py
-Enter server_ip: 127.0.0.1
-Finding connection
-Connection successful made to the server
+# Contributing
+Contributions to the Linda Mama Care project are welcome. If you have any improvements or suggestions, feel free to submit a pull request.
 
-**Note**
 
-If the server script is run on the different pc or laptop enter your server pubic IP on client  **enter ip**  prompt
-
-## Explore it
-
-Now your script should be running and able to communicate with each other, you try writing message to any of those script and then press enter to send the message to the another node whether it's server or client.
+## License
+This project is free to use
