@@ -129,4 +129,3 @@ def delete_patient():
         print("Patient deleted successfully.")
     else:
          print("Patient not found.")
-   .
