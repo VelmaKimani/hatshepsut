@@ -129,3 +129,135 @@ def delete_patient():
         print("Patient deleted successfully.")
     else:
          print("Patient not found.")
+
+
+#generate report based on the status of the appointment that are scheduled.
+def get_report():
+#get all appointments that status is schedulled.
+    scheduled_appointments = session.query(Appointment).filter(Appointment.status == "Scheduled").all()
+    num_appointments = len(scheduled_appointments)
+
+    print("Appointment Report")
+    #shows the number of entries with status scheduled
+    print(f"Total number of appointments with status 'Scheduled': {num_appointments}")
+
+    if scheduled_appointments:
+        appointment_data = []
+        for appointment in scheduled_appointments:
+            appointment_data.append([appointment.id, appointment.appointment_type, appointment.appointment_date, appointment.appointment_time, appointment.status])
+#initialized headers and use tabulate to present the output nicely
+        headers = ["Appointment ID", "Type", "Date", "Time", "Status"]
+        print(tabulate(appointment_data, headers=headers, tablefmt="grid"))
+    else:
+        print("No appointments found.")
+
+   #update appointment based on status either scheduled or cancelled
+def update_appointment_status():
+    appointment_id = input("Enter the appointment ID to update: ")
+    new_status = input("Enter the new status (Scheduled/Cancelled): ")
+#checks for appointments that hace schedule or cancelled as their status
+    appointment = session.query(Appointment).filter(Appointment.id == appointment_id).first()
+    if appointment:
+        if new_status == "Scheduled" or new_status == "Cancelled":
+            appointment.status = new_status
+            session.commit()
+            print("Appointment status updated successfully.")
+        else:
+            print("Invalid status. Please enter 'Completed' or 'Cancelled'.")
+    else:
+        print("Appointment not found.")
+
+ #function  to log in as patient
+def login_as_patient():
+    #request for user inputs
+    username = input("Enter your username:")
+    password = getpass("Enter your password:")
+#validation to check if input matches the one in the database
+    patient = session.query(User).filter(User.username == username, User.password == password, User.role == "patient").first()
+    #if user exit prints out the login message with their name
+    if patient:
+        print(f"Logged in as Patient: {patient.username}")
+        patient_menu(patient)
+    else:
+        print("Invalid username or password")
+        login_menu()
+#user interface for patient once logged in
+def patient_menu(patient):
+    print(f"Welcome, {patient.username}!")
+    print("1. View Details")
+    print("2. Book Appointment")
+    print("3. View Appointments")
+    print("4. Logout")
+#patients choose option are limited to 3 
+    choice = input("Please enter your choice: ")
+
+    if choice == "1":
+        view_details(patient) #views personal details like name
+    elif choice == "2":
+        book_appointment(patient) #can book an appointment
+    elif choice == "3":
+        view_appointments(patient) #views the appointment booked 
+    elif choice == "4":
+        print("Logging out. Goodbye!") #exit the program
+    else:
+        print("Invalid choice. Please try again")
+        patient_menu(patient)
+
+#function to view personal details of the patient like id, name ( using dictionary)
+def view_details(patient):
+    patient_details = {
+        "Patient ID": patient.id,
+        "Username": patient.username,
+        "Role": patient.role
+    }
+    print(patient_details)
+
+
+#fucntion for patient to book an appointment
+def book_appointment(patient):
+    appointment_type = input("Enter the appointment type (e.g., Postnatal, Prenatal): ")
+    appointment_date = input("Enter the appointment date (YYYY-MM-DD): ")
+    appointment_time = input("Enter the appointment time (HH:MM AM/PM): ")
+
+    # Convert appointment_date to a Python date object
+    appointment_date = datetime.strptime(appointment_date, "%Y-%m-%d").date()
+   
+
+    # Convert appointment_time to a Python time object
+    appointment_time = datetime.strptime(appointment_time, "%I:%M %p").time()
+
+    # Get the doctor ID
+    doctor_id = input("Enter the doctor ID for the appointment: ")
+#creates and instance from the user input and store them in the database by mapping them to respective attributes
+    appointment = Appointment(
+        appointment_type=appointment_type,
+        appointment_date=appointment_date,
+        appointment_time=appointment_time,
+        patient_id=patient.id,
+        doctor_id=doctor_id,
+        status="Scheduled"
+    )
+    session.add(appointment)
+    session.commit()
+    print("Appointment booked successfully.")
+
+    patient_menu(patient)
+
+ #function to view the already booked appointment   
+def view_appointments(patient):
+#filters for the appointments details based with the patient id
+    appointments = session.query(Appointment).filter(Appointment.patient_id == patient.id).all()
+    if appointments:
+        #empty list to append details
+        appointment_data = []
+        for appointment in appointments:
+            appointment_data.append([appointment.id, appointment.appointment_type, appointment.appointment_date, appointment.appointment_time, appointment.status])
+#initialized headers and use tabulate to present the output nicely
+        headers = ["Appointment ID", "Type", "Date", "Time", "Status"]
+        print(tabulate(appointment_data, headers=headers, tablefmt="outline"))
+    else:
+        print("No appointments found.")
+
+    patient_menu(patient)
+
+login_menu()
