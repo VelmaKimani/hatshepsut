@@ -78,3 +78,113 @@ def doctor_menu(doctor):
 #doctor will be able to view the list of patients with the help of tabulate
 def read_patients():
     patients = session.query(Patient).all()
+      if patients:
+        patient_data = []
+        for patient in patients:
+            patient_data.append([patient.id, patient.name, patient.age, patient.contact_info, patient.address])
+
+        headers = ["Patient ID", "Name", "Age", "Contact Info", "Address"]
+        print(tabulate(patient_data, headers=headers, tablefmt="grid"))
+    else:
+        print("No patients found.")
+
+
+
+# Doctor can view the list of appointments with the help of tabulate
+def read_appointments():
+    appointments = session.query(Appointment).all()
+    if appointments:
+        appointment_data = [] #initialized an empty list to append details from the db
+        for appointment in appointments:
+            appointment_data.append([appointment.id, appointment.appointment_date, appointment.appointment_time, appointment.status])
+#initialized headers and use tabulate to present the output nicely
+        headers = ["Appointment ID", "Date", "Time", "Status"]
+        print(tabulate(appointment_data, headers=headers, tablefmt="grid"))
+    else:
+        print("No appointments found.")
+
+
+
+#function to add doctors via the command line.
+def add_patient():
+    #request for user inputs
+    name = input("Enter patient's name: ")
+    age = input("Enter patient's age: ")
+    contact_info = input("Enter patient's contact information: ")
+    address = input("Enter patient's address: ")
+#create an instance from user inputs and store them in database
+    patient = Patient(name=name, age=age, contact_info=contact_info, address=address, appointments=None)
+    session.add(patient)
+    session.commit()
+    print("Patient added successfully.")
+    
+#function to delete patient record by id
+def delete_patient():
+    patient_id = input("Enter the patient ID to delete: ")
+#first() finds the id and stops from there
+    patient = session.query(Patient).filter(Patient.id == patient_id).first()
+    if patient:
+        session.delete(patient)
+        session.commit()
+        print("Patient deleted successfully.")
+    else:
+         print("Patient not found.")
+
+   
+#generate report based on the status of the appointment that are scheduled.
+def get_report():
+#get all appointments that status is schedulled.
+    scheduled_appointments = session.query(Appointment).filter(Appointment.status == "Scheduled").all()
+    num_appointments = len(scheduled_appointments)
+
+    print("Appointment Report")
+    #shows the number of entries with status scheduled
+    print(f"Total number of appointments with status 'Scheduled': {num_appointments}")
+
+    if scheduled_appointments:
+        appointment_data = []
+        for appointment in scheduled_appointments:
+            appointment_data.append([appointment.id, appointment.appointment_type, appointment.appointment_date, appointment.appointment_time, appointment.status])
+#initialized headers and use tabulate to present the output nicely
+        headers = ["Appointment ID", "Type", "Date", "Time", "Status"]
+        print(tabulate(appointment_data, headers=headers, tablefmt="grid"))
+    else:
+        print("No appointments found.")
+
+   #update appointment based on status either scheduled or cancelled
+def update_appointment_status():
+    appointment_id = input("Enter the appointment ID to update: ")
+    new_status = input("Enter the new status (Scheduled/Cancelled): ")
+#checks for appointments that hace schedule or cancelled as their status
+    appointment = session.query(Appointment).filter(Appointment.id == appointment_id).first()
+    if appointment:
+        if new_status == "Scheduled" or new_status == "Cancelled":
+            appointment.status = new_status
+            session.commit()
+            print("Appointment status updated successfully.")
+        else:
+            print("Invalid status. Please enter 'Completed' or 'Cancelled'.")
+    else:
+        print("Appointment not found.")
+
+ #function  to log in as patient
+def login_as_patient():
+    #request for user inputs
+    username = input("Enter your username:")
+    password = getpass("Enter your password:")
+#validation to check if input matches the one in the database
+    patient = session.query(User).filter(User.username == username, User.password == password, User.role == "patient").first()
+    #if user exit prints out the login message with their name
+    if patient:
+        print(f"Logged in as Patient: {patient.username}")
+        patient_menu(patient)
+    else:
+        print("Invalid username or password")
+        login_menu()
+#user interface for patient once logged in
+def patient_menu(patient):
+    print(f"Welcome, {patient.username}!")
+    print("1. View Details")
+    print("2. Book Appointment")
+    print("3. View Appointments")
+    print("4. Logout")
