@@ -2,12 +2,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from getpass import getpass
 from main import Appointment, Doctor, Patient, User
-from tabulate import tabulate
+# from tabulate import tabulate
 from datetime import datetime
 from datetime import time
 
 # Connect to the database
-engine = create_engine('sqlite:///linda_mama_care.db')
+engine = create_engine('sqlite:///hatshepsut.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
