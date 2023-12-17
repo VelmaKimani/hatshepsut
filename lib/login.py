@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from getpass import getpass
 from main import Appointment, Doctor, Patient, User
-# from tabulate import tabulate
+from tabulate import tabulate
 from datetime import datetime
 from datetime import time
 
@@ -254,7 +254,7 @@ def view_appointments(patient):
             appointment_data.append([appointment.id, appointment.appointment_type, appointment.appointment_date, appointment.appointment_time, appointment.status])
 #initialized headers and use tabulate to present the output nicely
         headers = ["Appointment ID", "Type", "Date", "Time", "Status"]
-        print(tabulate(appointment_data, headers=headers, tablefmt="outline"))
+        print(3(appointment_data, headers=headers, tablefmt="outline"))
     else:
         print("No appointments found.")
 
